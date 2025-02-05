@@ -8,6 +8,7 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+
 // Function to refresh access token
 const refreshAccessToken = async () => {
   try {
@@ -25,8 +26,6 @@ const refreshAccessToken = async () => {
     return null;
   }
 };
-
-
 
 // Axios request interceptor to handle expired tokens
 api.interceptors.request.use(async (config) => {

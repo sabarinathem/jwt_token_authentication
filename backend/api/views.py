@@ -7,12 +7,15 @@ from .serializer import RegisterSerializer
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
+# Home page
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def home(request):
     return Response('This is a home page')
 
 
+# Register for a new user
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
@@ -20,9 +23,12 @@ def register(request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-        return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+# Login by user
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
