@@ -8,14 +8,14 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-# Home page
+# Api for get  Home page
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def home(request):
     return Response('This is a home page')
 
 
-# Register for a new user
+# Api for Register for a new user
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
@@ -28,7 +28,7 @@ def register(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-# Login by user
+# api for login 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -47,7 +47,8 @@ def login(request):
 
         return Response({"error": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
     
-    
+ 
+# api for get logged in user   
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_profile(request):
