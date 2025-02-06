@@ -153,3 +153,14 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,  # Secret key used to sign JWTs
     "AUTH_HEADER_TYPES": ("Bearer",),  # Authorization header type (default is 'Bearer')
 }
+
+
+# Set up your email settings for sending OTPs (example using Gmail SMTP):
+# =======================================================================
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "sabarin992@gmail.com"
+EMAIL_HOST_PASSWORD = "ggzi eevz abml xumn"  # Use an app password instead of your real password
