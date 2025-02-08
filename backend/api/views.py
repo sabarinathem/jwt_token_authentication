@@ -64,54 +64,6 @@ def get_user_profile(request):
 
 
 
-otp_storage = {} 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def send_otp(request):
-    email = request.data.get('email')
-    print('email :- ',email)
-
-    if not email:
-        return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
-
-    otp = str(random.randint(100000, 999999))  # Generate a 6-digit OTP
-    otp_storage[email] = otp  # Store OTP temporarily
-    print('otp storage :-',otp_storage)
-    
-    # Send OTP via email (Make sure to configure Django email settings)
-    send_mail(
-        'Your OTP Code',
-        f'Your OTP is {otp}',
-        'sabarin992@gmail.com',  # Change this to your email
-        [email],
-        fail_silently=False,
-    )
-
-    return Response({'message': 'OTP sent successfully'}, status=status.HTTP_200_OK)
-
-
-# Function to generate a 6-digit OTP
-def generate_otp():
-    return str(random.randint(100000, 999999))
-
-# Function to send OTP via email
-def send_otp_email(email, otp):
-    subject = "Your OTP Code"
-    message = f"Your One-Time Password (OTP) is: {otp}. It is valid for 10 minutes."
-    from_email = "your-email@gmail.com"
-
-    send_mail(subject, message, from_email, [email])
-    
-import random
-import redis
-from django.core.mail import send_mail
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-
-# Initialize Redis connection
-r = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
-
 # Function to generate a 6-digit OTP
 def generate_otp():
     return str(random.randint(100000, 999999))
