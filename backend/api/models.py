@@ -68,6 +68,9 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="created_products")
+    
+    def __str__(self):
+        return self.name
 
 
 # Product Variants

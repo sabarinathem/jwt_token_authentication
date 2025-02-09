@@ -1,14 +1,16 @@
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
-from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated,IsAdminUser,AllowAny
 from rest_framework import status
-from .serializer import RegisterSerializer
+from .serializer import RegisterSerializer,ProductSerializer
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 import random
 import redis
 from django.core.mail import send_mail
+from .models import Product
 
 
 r = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
@@ -123,5 +125,15 @@ def verify_otp(request):
         return Response({"message": "OTP verified successfully"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class ProductViewSet(ModelViewSet):
+    permission_classes = [AllowAny]
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+        
+    
+    
+
 
    
