@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from '../api'
+import { InputOTP } from "./ui/input-otp";
 
 const OtpVerification = ({ formData }) => {
   const [otp, setOtp] = useState("");
@@ -42,6 +43,7 @@ const OtpVerification = ({ formData }) => {
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
           />
+          <InputOTP/>
           <button onClick={handleVerifyOtp}>Verify OTP</button>
         </>
       ) : (
