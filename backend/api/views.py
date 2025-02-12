@@ -127,174 +127,214 @@ def verify_otp(request):
         return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
     
     
-#Product API view for Listing, Retrive a product, Update a product, Delete a product, Search the product   
-class ProductViewSet(ModelViewSet):
-    permission_classes = [AllowAny]
-    serializer_class = ProductSerializer
-    queryset = ProductVariant.objects.all()
+# #Product API view for Listing, Retrive a product, Update a product, Delete a product, Search the product   
+# class ProductViewSet(ModelViewSet):
+#     permission_classes = [AllowAny]
+#     serializer_class = ProductVariantSerializer
+#     queryset = ProductVariant.objects.all()
     
+#     # id,name,price image 
+    
+#     # get all products
+#     # ================
+    
+#     @action(detail=False,methods=['get'])
+#     def get_products(self,request):
+#         products = ProductVariant.objects.filter(
+#                 is_active=True, 
+#                 product__is_deleted=False
+#             )
+        
+#         data = [
+#             {
+#                 "id": product.id,
+#                 "name": product.product.name,
+#                 "price": product.price,
+#                 "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
+#             }
+#             for product in products]
+#         print(data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               )
+        
+#         return Response({'search_data':data}) 
 
-    # seach products on the basis of product name
-    # ============== 
-    @action(detail=False, methods=['get'])
-    def search_products(self,request):
-        search = request.GET.get('search')
-        if search:
-            products = ProductVariant.objects.filter(product__name__icontains=search,is_active=True,product__is_deleted=False)
-            data = [
-            {
+#     # seach products on the basis of product name
+#     # ============== 
+#     @action(detail=False, methods=['get'])
+#     def search_products(self,request):
+#         search = request.GET.get('search')
+#         if search:
+#             products = ProductVariant.objects.filter(product__name__icontains=search,is_active=True,product__is_deleted=False)
+#             data = [
+#             {
+#                 "id": product.id,
+#                 "name": product.product.name,
+#                 "variant_name": product.name,
+#                 "size": product.size,
+#                 "color": product.color,
+#                 "price": product.price,
+#                 "stock_quantity": product.stock_quantity,
+#                 "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
+#             }
+#             for product in products]
+#             return Response({'search_data':data}) 
+#         else:
+#             return Response({'message':'Please provide correct search input','status':status.HTTP_400_BAD_REQUEST})
+        
+
+    
+#     # sort the product on the basis of product name
+#     @action(detail=False, methods=['get'])
+#     def sorted_by_name(self,request):
+#         sort_order = request.GET.get("sort")  # Get sorting order (default: asc)
+        
+#         if sort_order == "desc":
+#             products = ProductVariant.objects.filter(
+#                 is_active=True, 
+#                 product__is_deleted=False
+#             ).order_by("-product__name")  # Sort Z-A
+#         else:
+#             products = ProductVariant.objects.filter(
+#                 is_active=True, 
+#                 product__is_deleted=False
+#             ).order_by("product__name")  # Sort A-Z (default)
+        
+#         data = [
+#             {
+#                 "id": product.id,
+#                 "name": product.product.name,
+#                 "variant_name": product.name,
+#                 "size": product.size,
+#                 "color": product.color,
+#                 "price": product.price,
+#                 "stock_quantity": product.stock_quantity,
+#                 "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
+#             }
+#             for product in products
+#         ]
+        
+#         return Response({'sorted_data':data})
+    
+    
+#     # sort the product on the basis of product price
+#     @action(detail=False, methods=['get'])
+#     def sorted_by_price(self,request):
+#         sort_order = request.GET.get("sort")  # Get sorting order (default: asc)
+        
+#         if sort_order == "desc":
+#             products = ProductVariant.objects.filter(
+#                 is_active=True, 
+#                 product__is_deleted=False
+#             ).order_by("-price")  # Sort Z-A
+#         else:
+#             products = ProductVariant.objects.filter(
+#                 is_active=True, 
+#                 product__is_deleted=False
+#             ).order_by("price")  # Sort A-Z (default)
+        
+#         data = [
+#             {
+#                 "id": product.id,
+#                 "name": product.product.name,
+#                 "variant_name": product.name,
+#                 "size": product.size,
+#                 "color": product.color,
+#                 "price": product.price,
+#                 "stock_quantity": product.stock_quantity,
+#                 "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
+#             }
+#             for product in products
+#         ]
+        
+#         return Response({'sorted_data':data})
+    
+    
+#     # filter the product on the basis of category
+#     @action(detail=False, methods=['get'])
+#     def filtered_products(self,request):
+#         category_id = request.GET.get("category", None)  # Get category ID from request
+#         sort_order = request.GET.get("sort", "asc")  # Sorting order (default: A-Z)
+        
+#         products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False)
+        
+#         if category_id:
+#             products = products.filter(product__category_id=category_id)  # Filter by category
+
+#         if sort_order == "desc":
+#             products = products.order_by("-product__name")  # Sort Z-A
+#         else:
+#             products = products.order_by("product__name")  # Sort A-Z (default)
+
+#         data = [
+#             {
+#                 "id": product.id,
+#                 "name": product.product.name,
+#                 "variant_name": product.name,
+#                 "size": product.size,
+#                 "color": product.color,
+#                 "price": product.price,
+#                 "stock_quantity": product.stock_quantity,
+#                 "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
+#                 "category_id": product.product.category.id,
+#                 "category_name": product.product.category.name,
+#             }
+#             for product in products
+#         ]
+        
+#         return Response({'filtered_data':data})
+    
+    
+#     # filter the product on the basis of price_range
+#     @action(detail=False, methods=['get'])
+#     def filter_products_by_price(self,request):
+#         min_price = request.GET.get("min_price", None)
+#         max_price = request.GET.get("max_price", None)
+#         sort_order = request.GET.get("sort", "asc")  # Sorting order (default: A-Z)
+
+#         products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False)
+
+#         if min_price is not None:
+#             products = products.filter(price__gte=min_price)  # Filter products greater than or equal to min_price
+        
+#         if max_price is not None:
+#             products = products.filter(price__lte=max_price)  # Filter products less than or equal to max_price
+
+#         if sort_order == "desc":
+#             products = products.order_by("-product__name")  # Sort Z-A
+#         else:
+#             products = products.order_by("product__name")  # Sort A-Z (default)
+
+#         data = [
+#             {
+#                 "id": product.id,
+#                 "name": product.product.name,
+#                 "variant_name": product.name,
+#                 "size": product.size,
+#                 "color": product.color,
+#                 "price": product.price,
+#                 "stock_quantity": product.stock_quantity,
+#                 "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
+#             }
+#             for product in products
+#         ]
+        
+#         return Response({'filtered_data':data})
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_products(request):
+    products = ProductVariant.objects.filter(product__is_active = True,product__is_deleted = False,is_active = True)    
+    data = [
+        {
                 "id": product.id,
                 "name": product.product.name,
-                "variant_name": product.name,
-                "size": product.size,
-                "color": product.color,
                 "price": product.price,
-                "stock_quantity": product.stock_quantity,
-                "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
-            }
-            for product in products]
-            return Response({'search_data':data}) 
-        else:
-            return Response({'message':'Please provide correct search input','status':status.HTTP_400_BAD_REQUEST})
-        
+                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+        } 
+        for product in products
+    ]
+    print(data)
 
-    
-    # sort the product on the basis of product name
-    @action(detail=False, methods=['get'])
-    def sorted_by_name(self,request):
-        sort_order = request.GET.get("sort")  # Get sorting order (default: asc)
-        
-        if sort_order == "desc":
-            products = ProductVariant.objects.filter(
-                is_active=True, 
-                product__is_deleted=False
-            ).order_by("-product__name")  # Sort Z-A
-        else:
-            products = ProductVariant.objects.filter(
-                is_active=True, 
-                product__is_deleted=False
-            ).order_by("product__name")  # Sort A-Z (default)
-        
-        data = [
-            {
-                "id": product.id,
-                "name": product.product.name,
-                "variant_name": product.name,
-                "size": product.size,
-                "color": product.color,
-                "price": product.price,
-                "stock_quantity": product.stock_quantity,
-                "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
-            }
-            for product in products
-        ]
-        
-        return Response({'sorted_data':data})
-    
-    
-    # sort the product on the basis of product price
-    @action(detail=False, methods=['get'])
-    def sorted_by_price(self,request):
-        sort_order = request.GET.get("sort")  # Get sorting order (default: asc)
-        
-        if sort_order == "desc":
-            products = ProductVariant.objects.filter(
-                is_active=True, 
-                product__is_deleted=False
-            ).order_by("-price")  # Sort Z-A
-        else:
-            products = ProductVariant.objects.filter(
-                is_active=True, 
-                product__is_deleted=False
-            ).order_by("price")  # Sort A-Z (default)
-        
-        data = [
-            {
-                "id": product.id,
-                "name": product.product.name,
-                "variant_name": product.name,
-                "size": product.size,
-                "color": product.color,
-                "price": product.price,
-                "stock_quantity": product.stock_quantity,
-                "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
-            }
-            for product in products
-        ]
-        
-        return Response({'sorted_data':data})
-    
-    
-    # filter the product on the basis of category
-    @action(detail=False, methods=['get'])
-    def filtered_products(self,request):
-        category_id = request.GET.get("category", None)  # Get category ID from request
-        sort_order = request.GET.get("sort", "asc")  # Sorting order (default: A-Z)
-        
-        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False)
-        
-        if category_id:
-            products = products.filter(product__category_id=category_id)  # Filter by category
-
-        if sort_order == "desc":
-            products = products.order_by("-product__name")  # Sort Z-A
-        else:
-            products = products.order_by("product__name")  # Sort A-Z (default)
-
-        data = [
-            {
-                "id": product.id,
-                "name": product.product.name,
-                "variant_name": product.name,
-                "size": product.size,
-                "color": product.color,
-                "price": product.price,
-                "stock_quantity": product.stock_quantity,
-                "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
-                "category_id": product.product.category.id,
-                "category_name": product.product.category.name,
-            }
-            for product in products
-        ]
-        
-        return Response({'filtered_data':data})
-    
-    
-    # filter the product on the basis of price_range
-    @action(detail=False, methods=['get'])
-    def filter_products_by_price(self,request):
-        min_price = request.GET.get("min_price", None)
-        max_price = request.GET.get("max_price", None)
-        sort_order = request.GET.get("sort", "asc")  # Sorting order (default: A-Z)
-
-        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False)
-
-        if min_price is not None:
-            products = products.filter(price__gte=min_price)  # Filter products greater than or equal to min_price
-        
-        if max_price is not None:
-            products = products.filter(price__lte=max_price)  # Filter products less than or equal to max_price
-
-        if sort_order == "desc":
-            products = products.order_by("-product__name")  # Sort Z-A
-        else:
-            products = products.order_by("product__name")  # Sort A-Z (default)
-
-        data = [
-            {
-                "id": product.id,
-                "name": product.product.name,
-                "variant_name": product.name,
-                "size": product.size,
-                "color": product.color,
-                "price": product.price,
-                "stock_quantity": product.stock_quantity,
-                "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
-            }
-            for product in products
-        ]
-        
-        return Response({'filtered_data':data})
+    return Response({'product_list':data})
         
     
     

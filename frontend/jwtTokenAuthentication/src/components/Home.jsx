@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import api from '../api'
 import { Link, useNavigate } from 'react-router-dom'
+import SortDropDown from './SortDropDown/SortDropDown'
 
 const Home = () => {
     const [isLogin,setIsLogin] = useState(null)
@@ -43,6 +44,7 @@ const Home = () => {
     }
   return (
     <div>
+      <SortDropDown/>
       <h1>Hello {user.first_name} Welcome to website</h1>
       <button onClick={onHandleClick}>Send request</button>&emsp;
       {isLogin?<button onClick={logout}>Logout</button>:<Link to={"/login"}>Login</Link>}
