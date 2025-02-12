@@ -350,8 +350,13 @@ def get_products(request):
 def sort_products(request):
     sort_type = request.GET.get('sort_type')
     sort_by = request.GET.get('sort_by')
+    category_id = request.GET.get('category_id')
+    
     if sort_type == 'asc' and sort_by == 'price':
-        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("price")  
+        if category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("price")  
+        else:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("price")  
         data = [
         {
                 "id": product.id,
@@ -363,7 +368,10 @@ def sort_products(request):
         ]
         
     elif sort_type == 'desc' and sort_by == 'price':
-        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-price")  
+        if category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("-price")  
+        else:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-price")  
         data = [
         {
                 "id": product.id,
@@ -375,7 +383,11 @@ def sort_products(request):
         ]
         
     elif sort_type == 'asc' and sort_by == 'product_name':
-        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("product__name")  
+        if category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("product__name")  
+        else:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("product__name")  
+        
         data = [
         {
                 "id": product.id,
@@ -387,7 +399,10 @@ def sort_products(request):
         ]
     
     elif sort_type == 'desc' and sort_by == 'product_name':
-        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-product__name")  
+        if category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("-product__name")  
+        else:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-product__name")  
         data = [
         {
                 "id": product.id,

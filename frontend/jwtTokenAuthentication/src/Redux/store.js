@@ -4,7 +4,9 @@ import { createStore } from "redux";
 
 const initialState = {
     products:[],
-    categories:[]
+    categories:[],
+    category_id:0,
+    search:''
 }
 
 function appReducer(prevState = initialState,action){
@@ -18,6 +20,17 @@ function appReducer(prevState = initialState,action){
         
             return {
                 ...prevState,categories:action.payload
+            }
+        case 'set_category_id':
+        
+            return {
+                ...prevState,category_id:action.payload
+            }
+        
+        case 'set_search':
+        
+            return {
+                ...prevState,search:action.payload
             }
     
         default:

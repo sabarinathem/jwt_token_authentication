@@ -16,6 +16,7 @@ export default function Header3() {
       const res = await api.get(`/filtered_product/?category_id=${category_id}`)
       const {filtered_data} = res.data
       dispatch({type:"set_products",payload:filtered_data})
+      dispatch({type:"set_category_id",payload:category_id})
       
 
     }
