@@ -2,17 +2,24 @@ import { Link } from "react-router-dom"
 import SortDropDown from "../SortDropDown/SortDropDown"
 import { useEffect, useState } from "react"
 import api from "@/api"
+import { useDispatch, useSelector } from "react-redux"
 
 export default function ProductsGrid() {
+  const dispatch = useDispatch()
+  const products = useSelector((state)=>{
+    return state.products
+  })
 
-  const [products,setProducts] = useState([])
+  // const [products,setProducts] = useState([])
     useEffect(()=>{
         try{
             const getData = async()=>{
                 const res = await api.get('/products/')
-                const {product_list} = res.data
-                setProducts(product_list)
-
+                const {product_list,category_list} = res.data
+                console.log(product_list)
+                console.log(category_list)
+                dispatch({type:"set_products",payload:product_list})
+                dispatch({type:"set_categories",payload:category_list})
                
             }
 
@@ -102,7 +109,7 @@ export default function ProductsGrid() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="sort-dropdown flex justify-end mr-10 mb-5">
+      <div className="sort-dropdown flex justify-end mr-[6rem] mb-5">
         <SortDropDown/>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:gap-6">

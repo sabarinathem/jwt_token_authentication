@@ -19,7 +19,9 @@ urlpatterns = [
     path('user-profile/',views.get_user_profile,name="user-profile"),
     path('send-otp/', views.send_otp, name='send_otp'),
     path('verify-otp/',views.verify_otp,name="verify-otp"),
-    path('products/',views.get_products,name="products")
+    path('products/',views.get_products,name="products"),
+    path('sort_products/',views.sort_products,name="sort_products"),
+    path('filtered_product/',views.filtered_products,name="filtered_products")
     # path('',include(router.urls))
 ]
 

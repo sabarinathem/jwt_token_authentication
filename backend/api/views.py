@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import random
 import redis
 from django.core.mail import send_mail
-from .models import Product,ProductVariant
+from .models import Product,ProductVariant,Category
 
 
 r = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
@@ -323,7 +323,7 @@ def verify_otp(request):
 @permission_classes([AllowAny])
 def get_products(request):
     products = ProductVariant.objects.filter(product__is_active = True,product__is_deleted = False,is_active = True)    
-    data = [
+    product_data = [
         {
                 "id": product.id,
                 "name": product.product.name,
@@ -332,9 +332,103 @@ def get_products(request):
         } 
         for product in products
     ]
-    print(data)
+    
+    categories = Category.objects.filter(is_active = True)
+    category_data = [
+        {
+            "id":category.id,
+            "name":category.name
+        }
+        for category in categories
+    ]
+    
+    return Response({'product_list':product_data,'category_list':category_data})
 
-    return Response({'product_list':data})
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def sort_products(request):
+    sort_type = request.GET.get('sort_type')
+    sort_by = request.GET.get('sort_by')
+    if sort_type == 'asc' and sort_by == 'price':
+        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("price")  
+        data = [
+        {
+                "id": product.id,
+                "name": product.product.name,
+                "price": product.price,
+                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+        } 
+        for product in products
+        ]
+        
+    elif sort_type == 'desc' and sort_by == 'price':
+        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-price")  
+        data = [
+        {
+                "id": product.id,
+                "name": product.product.name,
+                "price": product.price,
+                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+        } 
+        for product in products
+        ]
+        
+    elif sort_type == 'asc' and sort_by == 'product_name':
+        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("product__name")  
+        data = [
+        {
+                "id": product.id,
+                "name": product.product.name,
+                "price": product.price,
+                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+        } 
+        for product in products
+        ]
+    
+    elif sort_type == 'desc' and sort_by == 'product_name':
+        products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-product__name")  
+        data = [
+        {
+                "id": product.id,
+                "name": product.product.name,
+                "price": product.price,
+                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+        } 
+        for product in products
+        ]
+             
+    return Response({'sorted_data':data})
+
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def filtered_products(request):
+    category_id = request.GET.get("category_id", None)  # Get category ID from request
+    sort_order = request.GET.get("sort", "asc")  # Sorting order (default: A-Z)
+    
+    products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False)
+    
+    if category_id:
+        products = products.filter(product__category_id=category_id)  # Filter by category
+
+    if sort_order == "desc":
+        products = products.order_by("-product__name")  # Sort Z-A
+    else:
+        products = products.order_by("product__name")  # Sort A-Z (default)
+
+    data = [
+        {
+                "id": product.id,
+                "name": product.product.name,
+                "price": product.price,
+                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+        } 
+        for product in products
+        ]       
+    
+    return Response({'filtered_data':data})
         
     
     

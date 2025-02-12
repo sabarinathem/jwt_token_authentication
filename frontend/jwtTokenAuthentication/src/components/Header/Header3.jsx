@@ -1,7 +1,30 @@
 import { Link } from "react-router-dom";
 import { Search, User, ShoppingCart, Heart } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import api from "@/api";
 
 export default function Header3() {
+
+  const categories = useSelector((state)=>{
+    return state.categories
+  })
+  const dispatch = useDispatch()
+
+  const filterProductByCategories = async(category_id)=>{
+    try{
+      const res = await api.get(`/filtered_product/?category_id=${category_id}`)
+      const {filtered_data} = res.data
+      dispatch({type:"set_products",payload:filtered_data})
+      
+
+    }
+    catch(error){
+      console.log(error.message)
+    }
+  }
+
+
   return (
     <header className="bg-gray-300 px-4 py-2">
       <div className="container mx-auto">
@@ -55,7 +78,7 @@ export default function Header3() {
 
         {/* Main Navigation */}
         <nav className="mt-4 flex justify-center space-x-8">
-          <Link to="/men" className="text-sm hover:underline">
+          {/* <Link to="/men" className="text-sm hover:underline">
             Men
           </Link>
           <Link to="/women" className="text-sm hover:underline">
@@ -63,7 +86,12 @@ export default function Header3() {
           </Link>
           <Link to="/kids" className="text-sm hover:underline">
             Kids
-          </Link>
+          </Link> */}
+          {categories.map((obj)=>{
+            return <button key={obj.id} onClick={()=>{filterProductByCategories(obj.id)}} className="text-sm hover:underline">
+            {obj.name}
+          </button>
+          })}
         </nav>
       </div>
     </header>
