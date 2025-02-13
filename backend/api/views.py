@@ -392,10 +392,14 @@ def sort_products(request):
         ]
         
     elif sort_type == 'asc' and sort_by == 'product_name':
-        if category_id:
-            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("product__name")  
+        if category_id and search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).filter(product__name__icontains=search).order_by("product__name")  
+        elif category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("product__name") 
+        elif search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__name__icontains=search).order_by("product__name") 
         else:
-            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("product__name")  
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("product__name") 
         
         data = [
         {
@@ -408,10 +412,14 @@ def sort_products(request):
         ]
     
     elif sort_type == 'desc' and sort_by == 'product_name':
-        if category_id:
-            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("-product__name")  
+        if category_id and search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).filter(product__name__icontains=search).order_by("-product__name")  
+        elif category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("-product__name") 
+        elif search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__name__icontains=search).order_by("-product__name") 
         else:
-            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-product__name")  
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-product__name") 
         data = [
         {
                 "id": product.id,
