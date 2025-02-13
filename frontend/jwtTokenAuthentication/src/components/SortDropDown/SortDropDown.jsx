@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 const SortDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const searchData = useSelector((state)=>{
+    return state.search
+  })
   const dispatch = useDispatch()
   const category_id = useSelector((state)=>{
     return state.category_id
@@ -14,16 +17,15 @@ const SortDropDown = () => {
 
   const sortByPriceAscending = async()=>{
       try{
-        if(category_id){
-          const res = await api.get(`sort_products/?sort_type=asc&sort_by=price&category_id=${category_id}`)
+  
+          const res = await api.get(`sort_products/?sort_type=asc&sort_by=price&category_id=${category_id?category_id:''}&search=${searchData}`)
           dispatch({type:'set_products',payload:res.data.sorted_data})
+          console.log(res.data.sorted_data)
+    
         }
-        else{
-          const res = await api.get('sort_products/?sort_type=asc&sort_by=price')
-          dispatch({type:'set_products',payload:res.data.sorted_data})
-        }
+
         
-      }
+      
       catch(error){
         console.log(error.message)
       }
@@ -33,15 +35,10 @@ const SortDropDown = () => {
 
   const sortByPriceDescending = async()=>{
     try{
-      if(category_id){
-        const res = await api.get(`sort_products/?sort_type=desc&sort_by=price&category_id=${category_id}`)
+   
+        const res = await api.get(`sort_products/?sort_type=desc&sort_by=price&category_id=${category_id?category_id:''}&search=${searchData}`)
         dispatch({type:'set_products',payload:res.data.sorted_data})
-      }
-      else{
-        const res = await api.get('sort_products/?sort_type=desc&sort_by=price')
-        dispatch({type:'set_products',payload:res.data.sorted_data})
-      }
-      
+
     }
     catch(error){
       console.log(error.message)
@@ -53,15 +50,11 @@ const SortDropDown = () => {
 
   const sortByProductNameAtoZ = async()=>{
     try{
-      if(category_id){
-        const res = await api.get(`sort_products/?sort_type=asc&sort_by=product_name&category_id=${category_id}`)
+ 
+        const res = await api.get(`sort_products/?sort_type=asc&sort_by=product_name&category_id=${category_id?category_id:''}&search=${searchData}`)
         dispatch({type:'set_products',payload:res.data.sorted_data})
       }
-      else{
-        const res = await api.get('sort_products/?sort_type=asc&sort_by=product_name')
-        dispatch({type:'set_products',payload:res.data.sorted_data})
-      }
-    }
+
     catch(error){
       console.log(error.message)
     }
@@ -72,14 +65,10 @@ const SortDropDown = () => {
 
   const sortByProductNameZtoA = async()=>{
     try{
-      if(category_id){
-        const res = await api.get(`sort_products/?sort_type=desc&sort_by=product_name&category_id=${category_id}`)
+
+        const res = await api.get(`sort_products/?sort_type=desc&sort_by=product_name&category_id=${category_id?category_id:''}&search=${searchData}`)
         dispatch({type:'set_products',payload:res.data.sorted_data})
-      }
-      else{
-        const res = await api.get('sort_products/?sort_type=desc&sort_by=product_name')
-        dispatch({type:'set_products',payload:res.data.sorted_data})
-      }
+   
     }
     catch(error){
       console.log(error.message)

@@ -5,7 +5,7 @@ import { createStore } from "redux";
 const initialState = {
     products:[],
     categories:[],
-    category_id:0,
+    category_id:null,
     search:''
 }
 

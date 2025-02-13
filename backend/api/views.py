@@ -157,28 +157,28 @@ def verify_otp(request):
         
 #         return Response({'search_data':data}) 
 
-#     # seach products on the basis of product name
-#     # ============== 
-#     @action(detail=False, methods=['get'])
-#     def search_products(self,request):
-#         search = request.GET.get('search')
-#         if search:
-#             products = ProductVariant.objects.filter(product__name__icontains=search,is_active=True,product__is_deleted=False)
-#             data = [
-#             {
-#                 "id": product.id,
-#                 "name": product.product.name,
-#                 "variant_name": product.name,
-#                 "size": product.size,
-#                 "color": product.color,
-#                 "price": product.price,
-#                 "stock_quantity": product.stock_quantity,
-#                 "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
-#             }
-#             for product in products]
-#             return Response({'search_data':data}) 
-#         else:
-#             return Response({'message':'Please provide correct search input','status':status.HTTP_400_BAD_REQUEST})
+    # # seach products on the basis of product name
+    # # ============== 
+    # @action(detail=False, methods=['get'])
+    # def search_products(self,request):
+    #     search = request.GET.get('search')
+    #     if search:
+    #         products = ProductVariant.objects.filter(product__name__icontains=search,is_active=True,product__is_deleted=False)
+    #         data = [
+    #         {
+    #             "id": product.id,
+    #             "name": product.product.name,
+    #             "variant_name": product.name,
+    #             "size": product.size,
+    #             "color": product.color,
+    #             "price": product.price,
+    #             "stock_quantity": product.stock_quantity,
+    #             "image": product.product.product_image.filter(is_primary=True).first().image.url if product.product.product_image.exists() else None,
+    #         }
+    #         for product in products]
+    #         return Response({'search_data':data}) 
+    #     else:
+    #         return Response({'message':'Please provide correct search input','status':status.HTTP_400_BAD_REQUEST})
         
 
     
@@ -351,10 +351,15 @@ def sort_products(request):
     sort_type = request.GET.get('sort_type')
     sort_by = request.GET.get('sort_by')
     category_id = request.GET.get('category_id')
+    search = request.GET.get('search')
     
     if sort_type == 'asc' and sort_by == 'price':
-        if category_id:
-            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("price")  
+        if category_id and search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).filter(product__name__icontains=search).order_by("price")  
+        elif category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("price") 
+        elif search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__name__icontains=search).order_by("price") 
         else:
             products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("price")  
         data = [
@@ -368,10 +373,14 @@ def sort_products(request):
         ]
         
     elif sort_type == 'desc' and sort_by == 'price':
-        if category_id:
-            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("-price")  
+        if category_id and search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).filter(product__name__icontains=search).order_by("-price")  
+        elif category_id:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__category_id=category_id).order_by("-price") 
+        elif search:
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).filter(product__name__icontains=search).order_by("-price") 
         else:
-            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-price")  
+            products = ProductVariant.objects.filter(is_active=True, product__is_deleted=False).order_by("-price") 
         data = [
         {
                 "id": product.id,
@@ -444,7 +453,29 @@ def filtered_products(request):
         ]       
     
     return Response({'filtered_data':data})
-        
+
+
+# seach products on the basis of product name
+# ============== 
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def search_products(request):
+    search = request.GET.get('search')
+    if search:
+        products = ProductVariant.objects.filter(product__name__icontains=search,is_active=True,product__is_deleted=False)
+        data = [
+        {
+                "id": product.id,
+                "name": product.product.name,
+                "price": product.price,
+                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+        }
+        for product in products]
+        return Response({'search_data':data}) 
+    else:
+        return Response({'message':'Please provide correct search input','status':status.HTTP_400_BAD_REQUEST})
+    
     
     
 

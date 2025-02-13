@@ -6,9 +6,13 @@ import api from "@/api";
 
 export default function Header3() {
 
+  const searchData = useSelector((state)=>{
+    return state.search
+  })
   const categories = useSelector((state)=>{
     return state.categories
   })
+
   const dispatch = useDispatch()
 
   const filterProductByCategories = async(category_id)=>{
@@ -19,6 +23,17 @@ export default function Header3() {
       dispatch({type:"set_category_id",payload:category_id})
       
 
+    }
+    catch(error){
+      console.log(error.message)
+    }
+  }
+
+  const searchProducts = async()=>{
+    try{
+      const res = await api.get(`/search_product/?search=${searchData}`)
+      const {search_data} = res.data;
+      dispatch({type:'set_products',payload:search_data})
     }
     catch(error){
       console.log(error.message)
@@ -69,8 +84,9 @@ export default function Header3() {
               type="text"
               placeholder="Search anything..."
               className="w-full rounded-md bg-pink-50 px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+              onChange={(e)=>{dispatch({type:'set_search',payload:e.target.value})}}
             />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-gray-600">
+            <button onClick={searchProducts} className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-gray-600">
               <Search className="h-4 w-4" />
               <span className="sr-only">Search</span>
             </button>
