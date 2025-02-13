@@ -320,7 +320,7 @@ def verify_otp(request):
 #         return Response({'filtered_data':data})
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_products(request):
     products = ProductVariant.objects.filter(product__is_active = True,product__is_deleted = False,is_active = True)    
     product_data = [
@@ -346,7 +346,7 @@ def get_products(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def sort_products(request):
     sort_type = request.GET.get('sort_type')
     sort_by = request.GET.get('sort_by')
@@ -435,7 +435,7 @@ def sort_products(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def filtered_products(request):
     category_id = request.GET.get("category_id", None)  # Get category ID from request
     sort_order = request.GET.get("sort", "asc")  # Sorting order (default: A-Z)
@@ -467,7 +467,7 @@ def filtered_products(request):
 # ============== 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def search_products(request):
     search = request.GET.get('search')
     if search:
