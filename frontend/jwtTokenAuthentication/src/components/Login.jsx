@@ -22,15 +22,13 @@ const Login = () => {
             const res = await api.post('/login/',user);
             localStorage.setItem("accessToken", res.data.access);
             localStorage.setItem("refreshToken", res.data.refresh);
-            setMessage('Login Successful');
-            setColor('green');
             navigate('/products');
       
 
 
             }
         catch(e){
-
+            console.log(e)
             setMessage(e.response.data.error)
             setColor('red')
         }

@@ -24,11 +24,12 @@ export default function RegisterComponent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password1 !== formData.password2) {
-      setMessage("Passwords do not match!");
-      setColor('red')
-      return;
-    }
+    // if (formData.password1 !== formData.password2) {
+    //   alert("Password Doesn't Match")
+    //   setMessage("Passwords do not match!");
+    //   setColor('red')
+    //   return;
+    // }
 
     try {
       // Send OTP request
@@ -193,7 +194,7 @@ export default function RegisterComponent() {
       </div>
     </div>
         ):(
-            <OtpVerification formData={formData} />
+            <OtpVerification formData={formData} setOtpSent={setOtpSent}/>
           )
     }
     </>

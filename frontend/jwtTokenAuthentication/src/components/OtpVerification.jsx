@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from '../api'
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
-const OtpVerification = ({ formData }) => {
+const OtpVerification = ({ formData,setOtpSent }) => {
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
+  const [registered,setRegistered] = useState(false)
+  const navigate = useNavigate()
+
+  
+  useEffect(() => {
+    if (registered) {
+      navigate("/login"); // Redirect to login if registration is successful
+    }
+  }, [registered,navigate]);
+
+  useEffect(() => {
+    if (verified && !registered) {
+      navigate("/register1"); // Redirect to register page if registration fails
+    }
+  }, [verified, registered,navigate]);
 
   const handleVerifyOtp = async () => {
     try {
@@ -15,7 +30,7 @@ const OtpVerification = ({ formData }) => {
 
       if (response.data.message === "OTP verified successfully") {
         setVerified(true);
-        handleRegisterUser();
+        await handleRegisterUser();
         console.log('OTP verified successfully')
       }
     } catch (error) {
@@ -27,9 +42,23 @@ const OtpVerification = ({ formData }) => {
     try {
       // Send final registration request after OTP verification
       await api.post("/register/", formData);
+      setRegistered(true)
       alert("Registration successful!");
     } catch (error) {
-      alert(error.message);
+      if(error.response.data.email){
+        alert(error.response.data.email)
+      }
+      else if(error.response.data.phone_number){
+        alert(error.response.data.phone_number)
+      }
+      
+      else if(error.response.data.password){
+        alert(error.response.data.password)
+      }
+      else{
+        alert(error.message)
+      }
+      setOtpSent(false); 
     }
   };
 
@@ -57,7 +86,7 @@ const OtpVerification = ({ formData }) => {
 
                 {/* <!-- OTP Form --> */}
                 <form className="space-y-6">
-                    <div className="space-y-4">
+                    <div class211015Name="space-y-4">
                         <label className="block text-lg font-medium text-center">
                             Enter OTP
                         </label>
@@ -66,7 +95,7 @@ const OtpVerification = ({ formData }) => {
                             placeholder="Enter OTP"
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
-                            maxlength="6"
+                            maxLength="6"
                             className="w-full max-w-[200px] mx-auto block px-4 py-2 text-center bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
                             required
                         />
@@ -95,10 +124,7 @@ const OtpVerification = ({ formData }) => {
         </div>
     </div>
         </>
-      ) : (
-        // <h2>OTP Verified! Registering...</h2>
-        <Navigate to="/login" replace />
-      )}
+      ) : null}
     </div>
   );
 };

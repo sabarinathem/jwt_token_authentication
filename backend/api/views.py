@@ -10,7 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import random
 import redis
 from django.core.mail import send_mail
-from .models import Product,ProductVariant,Category
+from .models import Product,ProductVariant,Category,CustomUser
+from django.contrib.auth.hashers import check_password
 
 
 r = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
@@ -29,7 +30,6 @@ def home(request):
 def register(request):
     if request.method == 'POST':
         serializer = RegisterSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             print('it is valid')
             serializer.save()
@@ -45,7 +45,13 @@ def login(request):
     if request.method == "POST":
         email = request.data.get("email")
         password = request.data.get("password")
-        print(email,password)
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response({'error':'Invalid Email'},status=status.HTTP_400_BAD_REQUEST)
+        
+        if not check_password(password,user.password):
+            return Response({'error':'Invalid Password'},status=status.HTTP_400_BAD_REQUEST)
         user = authenticate(email=email, password=password)
         
         if user is not None:

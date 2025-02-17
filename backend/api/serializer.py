@@ -16,7 +16,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        print(validated_data)
         password = validated_data["password1"]
         validated_data.pop('password1') 
         validated_data.pop('password2')
