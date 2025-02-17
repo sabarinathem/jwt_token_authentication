@@ -22,7 +22,8 @@ urlpatterns = [
     path('products/',views.get_products,name="products"),
     path('sort_products/',views.sort_products,name="sort_products"),
     path('filtered_product/',views.filtered_products,name="filtered_products"),
-    path('search_product/',views.search_products,name="search_products")
+    path('search_product/',views.search_products,name="search_products"),
+    path('reset-password/',views.reset_password,name="reset")
     # path('',include(router.urls))
 ]
 

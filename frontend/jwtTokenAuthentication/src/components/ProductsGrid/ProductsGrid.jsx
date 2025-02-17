@@ -3,12 +3,14 @@ import SortDropDown from "../SortDropDown/SortDropDown"
 import { useEffect, useState } from "react"
 import api from "@/api"
 import { useDispatch, useSelector } from "react-redux"
+import LoadingPage from "../LoadingPage/LoadingPage"
 
 export default function ProductsGrid() {
   const dispatch = useDispatch()
   const products = useSelector((state)=>{
     return state.products
   })
+  const[loading,setLoading] = useState(false)
 
   // const [products,setProducts] = useState([])
     useEffect(()=>{
@@ -20,6 +22,7 @@ export default function ProductsGrid() {
                 console.log(category_list)
                 dispatch({type:"set_products",payload:product_list})
                 dispatch({type:"set_categories",payload:category_list})
+                setLoading(true)
                
             }
 
@@ -31,84 +34,12 @@ export default function ProductsGrid() {
             console.log(error.message)
         }
     },[])
-  // Sample product data - in a real app, this would come from an API or props
-  // const products = [
-  //   {
-  //     id: 1,
-  //     name: "CPO MELTON WOOL JACKET",
-  //     price: "$299",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "OVERSIZED WOOL SWEATER",
-  //     price: "$199",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "GG COTTON EMBROIDERED CAP",
-  //     price: "$89",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "LOOSE FIT FLANNEL SHIRT",
-  //     price: "$159",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "LOOSE FIT PRINTED HOODIE",
-  //     price: "$179",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "RELAXED PANTS",
-  //     price: "$149",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 7,
-  //     name: "REGULAR FIT COTTON SWEATSHIRT",
-  //     price: "$129",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "OVERSIZED FIT ZIP-UP SWEATSHIRT",
-  //     price: "$169",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 9,
-  //     name: "REGULAR FIT TEXTURED SHIRT",
-  //     price: "$119",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 10,
-  //     name: "REGULAR FIT TEXTURED SHIRT",
-  //     price: "$119",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 11,
-  //     name: "REGULAR SLIM FIT SHIRT",
-  //     price: "$99",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  //   {
-  //     id: 12,
-  //     name: "EMBROIDERED DENIM HAT",
-  //     price: "$79",
-  //     image: "/placeholder.svg?height=400&width=300",
-  //   },
-  // ]
+
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {loading?
+      <>
       <div className="sort-dropdown flex justify-end mr-[6rem] mb-5">
         <SortDropDown/>
       </div>
@@ -130,6 +61,9 @@ export default function ProductsGrid() {
         ))}
       </div>
 
+      </>
+      :<LoadingPage/>}
+      
       {/* Quick View Modal - You can implement this as needed */}
       {/* Pagination Component - You can implement this as needed */}
     </div>

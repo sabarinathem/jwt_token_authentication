@@ -29,7 +29,9 @@ def home(request):
 def register(request):
     if request.method == 'POST':
         serializer = RegisterSerializer(data=request.data)
+        print(request.data)
         if serializer.is_valid():
+            print('it is valid')
             serializer.save()
             return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
         
@@ -104,6 +106,7 @@ def send_otp(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def verify_otp(request):
+    print("verify otp")
     
     """
     API endpoint to verify OTP.
@@ -484,8 +487,30 @@ def search_products(request):
     else:
         return Response({'message':'Please provide correct search input','status':status.HTTP_400_BAD_REQUEST})
     
+
     
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def reset_password(request):
+    user = request.user
     
+    old_password = request.data.get('oldPassword')
+    new_password = request.data.get('newPassword')
+    confirm_password = request.data.get('confirmPassword')
+    print(old_password,new_password,confirm_password)
+    if not old_password or not new_password or not confirm_password:
+        return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not user.check_password(old_password):
+        return Response({'error': 'Old password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if new_password != confirm_password:
+        return Response({'error': 'New passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    user.set_password(new_password)
+    user.save()
+    
+    return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
 
     
 

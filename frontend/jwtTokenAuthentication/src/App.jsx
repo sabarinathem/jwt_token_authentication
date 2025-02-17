@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
 import ProductsGrid from "./components/ProductsGrid/ProductsGrid";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
+import RegisterComponent from "./components/Regiter/RegisterComponent";
+import ResetPassword from "./components/ForgotPassword/ResetPassword";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
             <Route path="" element={<ProductsGrid />} />
             <Route path="product/:id" element={<ProductDetails />} />
           </Route>
+          <Route path="/register1" element={<RegisterComponent/>} />
+          <Route path="/reset-password" element={<ResetPassword/>} />
         </Routes>
       </Router>
     </>
