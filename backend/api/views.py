@@ -81,7 +81,7 @@ def generate_otp():
 # Function to send OTP via email
 def send_otp_email(email, otp):
     subject = "Your OTP Code"
-    message = f"Your One-Time Password (OTP) is: {otp}. It is valid for 10 minutes."
+    message = f"Your One-Time Password (OTP) is: {otp}. It is valid for 1 minutes."
     from_email = "your-email@gmail.com"
 
     send_mail(subject, message, from_email, [email])
@@ -93,10 +93,22 @@ def send_otp(request):
     """
     API endpoint to generate and send OTP to an email.
     """
+    print(dict(request.data))
     email = request.data.get("email")
-    
+    phone_number = request.data.get("phone_number")
+    password1 = request.data.get("password1")
+    password2 = request.data.get("password2")
     if not email:
         return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    is_email_exist = CustomUser.objects.filter(email=email).exists()
+    is_phone_number_exist = CustomUser.objects.filter(phone_number=phone_number)
+    if is_email_exist:
+        return Response({'error':'Email Already Exist'},status=status.HTTP_400_BAD_REQUEST)
+    elif is_phone_number_exist:
+        return Response({'error':'Phone Number Already Exist'},status=status.HTTP_400_BAD_REQUEST)
+    elif password1 != password2:
+        return Response({'error':"Password Don't Match"},status=status.HTTP_400_BAD_REQUEST)
 
     otp = generate_otp()
     

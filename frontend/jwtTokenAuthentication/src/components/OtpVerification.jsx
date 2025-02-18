@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from '../api'
 import { Navigate, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const OtpVerification = ({ formData,setOtpSent }) => {
   const [otp, setOtp] = useState("");
@@ -34,7 +35,7 @@ const OtpVerification = ({ formData,setOtpSent }) => {
         console.log('OTP verified successfully')
       }
     } catch (error) {
-      alert("Invalid OTP! Try again.");
+      toast.error("Invalid OTP! Try again.")
     }
   };
 
@@ -43,21 +44,9 @@ const OtpVerification = ({ formData,setOtpSent }) => {
       // Send final registration request after OTP verification
       await api.post("/register/", formData);
       setRegistered(true)
-      alert("Registration successful!");
+      toast.success("Registration successful!")
     } catch (error) {
-      if(error.response.data.email){
-        alert(error.response.data.email)
-      }
-      else if(error.response.data.phone_number){
-        alert(error.response.data.phone_number)
-      }
-      
-      else if(error.response.data.password){
-        alert(error.response.data.password)
-      }
-      else{
-        alert(error.message)
-      }
+      toast.error(error.message)
       setOtpSent(false); 
     }
   };

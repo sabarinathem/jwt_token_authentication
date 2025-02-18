@@ -1,6 +1,7 @@
 import api from '@/api';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const ResetPassword = () => {
   const [passwords, setPasswords] = useState({
@@ -28,12 +29,10 @@ const ResetPassword = () => {
 
     try {
       const res = await api.post('/reset-password/', passwords);
-      setSuccess('Password changed successfully');
+      toast.success('Password changed successfully')
       navigate('/login')
-      setError('');
-      console.log('Password reset submitted:', passwords.newPassword);
     } catch (error) {
-      setError(error.response?.data?.error || 'An error occurred');
+      toast.error(error.response?.data?.error || 'An error occurred')
     }
   };
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import api from '@/api';
 import OtpVerification from '../OtpVerification';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function RegisterComponent() {
   const [formData, setFormData] = useState({
@@ -33,14 +34,15 @@ export default function RegisterComponent() {
 
     try {
       // Send OTP request
-      await api.post("/send-otp/", {
-        email: formData.email,
-      });
+      await api.post("/send-otp/", formData);
 
       setOtpSent(true); // Show OTP verification component
-      console.log(formData)
+
     } catch (error) {
-      alert("Error sending OTP. Try again!");
+      console.log(error.response.data.error)
+      toast.error(error.response.data.error)
+      // alert("Error sending OTP. Try again!");
+
     }
 
 
