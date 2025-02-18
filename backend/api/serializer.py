@@ -31,6 +31,7 @@ class ProductSerializer(serializers.ModelSerializer):
         
 
 class ProductVariantSerializer(serializers.ModelSerializer):
+   
     class Meta:
         model = ProductVariant
         fields = "__all__"

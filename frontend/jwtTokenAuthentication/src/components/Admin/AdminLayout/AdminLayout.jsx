@@ -17,8 +17,8 @@ export default function AdminLayout() {
         <div className="p-4 text-xl font-bold text-center border-b">ELEGANT WARDROBE ★</div>
         <nav className="p-4">
           {menuItems.map((item) => (
-            <Link to={`${item.toLowerCase()}`}><button
-              key={item}
+            <Link to={`${item.toLowerCase()}`} key={item}><button
+              
               onClick={() => setSelectedMenu(item)}
               className={`w-full text-left p-3 rounded-lg mb-1 ${
                 selectedMenu === item ? "bg-black text-white" : "hover:bg-gray-100"
@@ -36,7 +36,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* Main Content */}
-     <div className="page-content">
+     <div className="page-content w-full">
         <Outlet/>
      </div>
     </div>

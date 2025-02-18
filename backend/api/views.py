@@ -343,13 +343,16 @@ def verify_otp(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_products(request):
+    print(request.build_absolute_uri())
     products = ProductVariant.objects.filter(product__is_active = True,product__is_deleted = False,is_active = True)    
     product_data = [
         {
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+                "category":product.product.category.name,
+                "stock_quantity":product.stock_quantity,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
     ]
