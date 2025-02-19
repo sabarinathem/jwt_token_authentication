@@ -22,6 +22,14 @@ export default function AdminProductsList() {
     }
   },[])
 
+  const addNewProduct = async()=>{
+      try{
+        const res = a
+      }
+      catch(error){
+
+      }
+  }
   // const products = [
   //   {
   //     name: "Five sleeve t-shirt",
@@ -66,7 +74,9 @@ export default function AdminProductsList() {
           </button>
         </div>
 
-        <button className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+        <button 
+        onClick={addNewProduct}
+        className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
           <span className="text-sm">ADD NEW PRODUCT</span>
         </button>
       </div>

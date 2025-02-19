@@ -352,7 +352,7 @@ def get_products(request):
                 "price": product.price,
                 "category":product.product.category.name,
                 "stock_quantity":product.stock_quantity,
-                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product,is_primary = True).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
     ]
@@ -391,7 +391,7 @@ def sort_products(request):
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
         ]
@@ -410,7 +410,7 @@ def sort_products(request):
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
         ]
@@ -430,7 +430,7 @@ def sort_products(request):
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
         ]
@@ -449,7 +449,7 @@ def sort_products(request):
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
         ]
@@ -479,7 +479,7 @@ def filtered_products(request):
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
         ]       
@@ -501,7 +501,7 @@ def search_products(request):
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": product.product.product_image.get(product=product.product,variant = product).image.url if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
         }
         for product in products]
         return Response({'search_data':data}) 
@@ -509,7 +509,7 @@ def search_products(request):
         return Response({'message':'Please provide correct search input','status':status.HTTP_400_BAD_REQUEST})
     
 
-    
+# Reset password  
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def reset_password(request):
@@ -534,6 +534,34 @@ def reset_password(request):
     return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
 
     
+# Add Product
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def add_product(request):
+    
+    # Add Product 
+    # ===========
+    
+    print(request.data)
+    name = request.data['name']
+    description = request.data['description']
+    user = CustomUser.objects.get(id=4)
+    category = Category.objects.get(pk=request.data['category_id'])
+    product = Product.objects.create(name=name,description=description,created_by=user,category=category)
+    print(f'Product Table data :- \nProduct_name = {name}\nProduct_description = {description}\nUser = {user}\nCategory = {category}')
+    
+    # Add product variants 
+    # ====================
+    
+    
+    size = request.data['size']
+    color = request.data['color']
+    stock_quantity = request.data['quantity']
+    price = request.data['price']
+    ProductVariant.objects.create(name=f"{size}-{color}",size=size,color=color,stock_quantity=stock_quantity,price=price,product=product)
+    print(f'Product Variant Table data :- \nsize = {size}\ncolor = {color}\nstock quantity = {stock_quantity}\nprice = {price}')
+    # product = Product.objects.create()
+    return Response('add the product')
 
         
     

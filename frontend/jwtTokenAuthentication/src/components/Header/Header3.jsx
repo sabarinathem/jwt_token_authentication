@@ -33,6 +33,7 @@ export default function Header3() {
     try{
       const res = await api.get(`/search_product/?search=${searchData}`)
       const {search_data} = res.data;
+      console.log(search_data)
       dispatch({type:'set_products',payload:search_data})
     }
     catch(error){

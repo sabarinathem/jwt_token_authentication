@@ -20,6 +20,7 @@ import AdminCategory from "./components/Admin/AdminCategory/AdminCategory";
 import AdminBanner from "./components/Admin/AdminBanner/AdminBanner";
 import AdminOffers from "./components/Admin/AdminOffers/AdminOffers";
 import AdminSettings from "./components/Admin/AdminSettings/AdminSettings";
+import AdminAddProduct from "./components/Admin/AdminAddProduct/AdminAddProduct";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             <Route path="banners" element={<AdminBanner/>} />
             <Route path="offers" element={<AdminOffers/>} />
             <Route path="settings" element={<AdminSettings/>} />
+            <Route path="add-product" element={<AdminAddProduct/>}/>
           </Route>
 
           <Route path="/register1" element={<RegisterComponent/>} />
