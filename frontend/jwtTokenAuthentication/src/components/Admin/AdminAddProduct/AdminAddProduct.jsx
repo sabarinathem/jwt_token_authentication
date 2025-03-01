@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
 import Cropper from "react-easy-crop"
 import { X, Upload } from "lucide-react"
@@ -11,14 +11,16 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useDispatch, useSelector} from "react-redux"
+import api from "@/api"
 
 const MAX_IMAGES = 6
 const MIN_IMAGES = 1
 
 
 export default function ProductForm() {
-  const [productName, setProductName] = useState("");
-  const [description, setDescription] = useState("");
+  const [productName, setProductName] = useState(""); //for get product name
+  const [description, setDescription] = useState(""); //for get product description
   const [variants, setVariants] = useState([
     {
       size: "",
@@ -27,7 +29,7 @@ export default function ProductForm() {
       price: "",
       stock: "",
     },
-  ]);
+  ]); // for get variants data
 
   const [images, setImages] = useState([])
   const [currentImage, setCurrentImage] = useState(null)
@@ -37,6 +39,30 @@ export default function ProductForm() {
   const [cropAspectRatio, setCropAspectRatio] = useState(1)
   const [error, setError] = useState("")
 
+  // get category data from redux
+
+  const categories = useSelector((state)=>{
+    return state.categories
+  })
+
+  const dispatch = useDispatch()
+
+
+  useEffect(()=>{
+    const getCategoryData = async()=>{
+      try{
+        const res = await api.get('/get-categories/')
+        dispatch({type:'set_categories',payload:res.data})
+        
+      }
+      catch(error){
+  
+      }
+    }
+
+    getCategoryData()
+  },[])
+  
   const onDrop = useCallback((acceptedFiles) => {
     if (images.length + acceptedFiles.length > MAX_IMAGES) {
       setError(`You can only upload up to ${MAX_IMAGES} images`)
@@ -123,7 +149,14 @@ export default function ProductForm() {
       setError(`You need at least ${MIN_IMAGES} image`)
       return
     }
-    // Continue with publish logic
+
+    console.log(`Product name = ${productName}
+Product Description = ${description}
+Product Variants = ${variants}`)
+console.log(variants)
+console.log(categories)
+
+    
   }
 
 

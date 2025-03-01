@@ -563,6 +563,25 @@ def add_product(request):
     # product = Product.objects.create()
     return Response('add the product')
 
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+
+def get_categories(request):
+    categories = Category.objects.all()
+    data = [
+        {
+            "id":category.id,
+            "name":category.name,
+            "description":category.description
+        }
+        
+        for category in categories
+    ]
+    print(data)
+    
+    return Response(data,status=status.HTTP_200_OK)
+
         
     
     

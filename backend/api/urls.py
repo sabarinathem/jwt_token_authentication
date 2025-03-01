@@ -24,7 +24,9 @@ urlpatterns = [
     path('filtered_product/',views.filtered_products,name="filtered_products"),
     path('search_product/',views.search_products,name="search_products"),
     path('reset-password/',views.reset_password,name="reset"),
-    path('add-product/',views.add_product,name="add-product")
+    path('add-product/',views.add_product,name="add-product"),
+    path('get-categories/',views.get_categories,name="get-categories"),
+    
     # path('',include(router.urls))
 ]
 
