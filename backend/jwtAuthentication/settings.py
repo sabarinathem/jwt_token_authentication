@@ -169,7 +169,8 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "sabarin992@gmail.com"
-EMAIL_HOST_PASSWORD = "ggzi eevz abml xumn"  # Use an app password instead of your real password
+# EMAIL_HOST_PASSWORD = "ggzi eevz abml xumn"  # Use an app password instead of your real password
+EMAIL_HOST_PASSWORD = "bhew sosz tpef dvxs"
 
 
 # Media Configuration

@@ -78,13 +78,38 @@ def get_user_profile(request):
 def generate_otp():
     return str(random.randint(100000, 999999))
 
-# Function to send OTP via email
-def send_otp_email(email, otp):
-    subject = "Your OTP Code"
-    message = f"Your One-Time Password (OTP) is: {otp}. It is valid for 1 minutes."
-    from_email = "your-email@gmail.com"
+# # Function to send OTP via email
+# def send_otp_email(email, otp):
+#     subject = "Your OTP Code"
+#     message = f"Your One-Time Password (OTP) is: {otp}. It is valid for 1 minutes."
+#     from_email = "your-email@gmail.com"
 
-    send_mail(subject, message, from_email, [email])
+#     send_mail(subject, message, from_email, [email])
+
+# In api/views.py
+import ssl
+import certifi
+from django.core.mail import send_mail
+
+def send_otp_email(email, otp):
+    subject = 'Your OTP Code'
+    message = f'Your OTP is {otp}'
+    from_email = 'your_email@gmail.com'  # Replace with your email
+    recipient_list = [email]
+
+    # Use certifi's CA bundle
+    context = ssl.create_default_context(cafile=certifi.where())
+    try:
+        send_mail(
+            subject,
+            message,
+            from_email,
+            recipient_list,
+            fail_silently=False,
+        )
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
 
 @api_view(["POST"])
