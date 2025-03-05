@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { ChevronDown, Filter, Pencil, Trash2 } from "lucide-react"
 import api from "@/api"
+import { Link } from "react-router-dom"
 
 export default function AdminProductsList() {
   const [selectedDate] = useState("14 Feb 2019")
@@ -74,11 +75,11 @@ export default function AdminProductsList() {
           </button>
         </div>
 
-        <button 
+        <Link to="/admin/add-product"><button 
         onClick={addNewProduct}
         className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
-          <span className="text-sm">ADD NEW PRODUCT</span>
-        </button>
+         <span className="text-sm">ADD NEW PRODUCT</span>
+        </button></Link>
       </div>
 
       <div className="overflow-x-auto">

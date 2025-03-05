@@ -1,0 +1,173 @@
+.product-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .breadcrumbs {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .breadcrumbs a {
+    color: #666;
+    text-decoration: none;
+  }
+  
+  .breadcrumbs a:hover {
+    text-decoration: underline;
+  }
+  
+  .product-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .product-images {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .thumbnail-images {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  
+  .zoom-style {
+    border: 1px solid #ddd;
+  }
+  
+  .product-info {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .rating {
+    margin: 10px 0;
+    color: #f8c51c;
+  }
+  
+  .star {
+    font-size: 16px;
+  }
+  
+  .star.filled {
+    color: #f8c51c;
+  }
+  
+  .price {
+    margin: 10px 0;
+  }
+  
+  .discounted-price {
+    color: #e74c3c;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .original-price {
+    text-decoration: line-through;
+    color: #999;
+    margin-left: 10px;
+  }
+  
+  .discount {
+    color: #2ecc71;
+    margin-left: 10px;
+  }
+  
+  .stock {
+    margin: 10px 0;
+    color: #27ae60;
+  }
+  
+  .out-of-stock {
+    color: #e74c3c;
+  }
+  
+  .size-selection, .quantity {
+    margin: 10px 0;
+  }
+  
+  .add-to-cart {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin: 10px 0;
+  }
+  
+  .add-to-cart:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .discount-coupon {
+    margin: 10px 0;
+    color: #27ae60;
+  }
+  
+  .delivery-info {
+    margin: 10px 0;
+    color: #666;
+  }
+  
+  .description {
+    margin: 20px 0;
+  }
+  
+  .related-products {
+    margin-top: 40px;
+  }
+  
+  .related-items {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .related-items img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+  
+  .product-reviews {
+    margin-top: 40px;
+  }
+  
+  .review {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .review-rating {
+    color: #f8c51c;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .product-content {
+      flex-direction: column;
+    }
+  
+    .product-images, .product-info {
+      min-width: 100%;
+    }
+  
+    .zoom-style {
+      width: 100%;
+      height: auto;
+    }
+  }

@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view,permission_classes,action
+from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -12,6 +13,11 @@ import redis
 from django.core.mail import send_mail
 from .models import Product,ProductVariant,Category,CustomUser
 from django.contrib.auth.hashers import check_password
+import base64
+from django.core.files.base import ContentFile
+import uuid
+
+
 
 
 r = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
@@ -366,7 +372,7 @@ def verify_otp(request):
 #         return Response({'filtered_data':data})
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_products(request):
     print(request.build_absolute_uri())
     products = ProductVariant.objects.filter(product__is_active = True,product__is_deleted = False,is_active = True)    
@@ -549,7 +555,7 @@ def reset_password(request):
     
     if not user.check_password(old_password):
         return Response({'error': 'Old password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     if new_password != confirm_password:
         return Response({'error': 'New passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
     
@@ -559,34 +565,34 @@ def reset_password(request):
     return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
 
     
-# Add Product
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def add_product(request):
+# # Add Product
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def add_product(request):
     
-    # Add Product 
-    # ===========
+#     # Add Product 
+#     # ===========
     
-    print(request.data)
-    name = request.data['name']
-    description = request.data['description']
-    user = CustomUser.objects.get(id=4)
-    category = Category.objects.get(pk=request.data['category_id'])
-    product = Product.objects.create(name=name,description=description,created_by=user,category=category)
-    print(f'Product Table data :- \nProduct_name = {name}\nProduct_description = {description}\nUser = {user}\nCategory = {category}')
+#     print(request.data)
+#     name = request.data['name']
+#     description = request.data['description']
+#     user = CustomUser.objects.get(id=4)
+#     category = Category.objects.get(pk=request.data['category_id'])
+#     product = Product.objects.create(name=name,description=description,created_by=user,category=category)
+#     print(f'Product Table data :- \nProduct_name = {name}\nProduct_description = {description}\nUser = {user}\nCategory = {category}')
     
-    # Add product variants 
-    # ====================
+#     # Add product variants 
+#     # ====================
     
     
-    size = request.data['size']
-    color = request.data['color']
-    stock_quantity = request.data['quantity']
-    price = request.data['price']
-    ProductVariant.objects.create(name=f"{size}-{color}",size=size,color=color,stock_quantity=stock_quantity,price=price,product=product)
-    print(f'Product Variant Table data :- \nsize = {size}\ncolor = {color}\nstock quantity = {stock_quantity}\nprice = {price}')
-    # product = Product.objects.create()
-    return Response('add the product')
+#     size = request.data['size']
+#     color = request.data['color']
+#     stock_quantity = request.data['quantity']
+#     price = request.data['price']
+#     ProductVariant.objects.create(name=f"{size}-{color}",size=size,color=color,stock_quantity=stock_quantity,price=price,product=product)
+#     print(f'Product Variant Table data :- \nsize = {size}\ncolor = {color}\nstock quantity = {stock_quantity}\nprice = {price}')
+#     # product = Product.objects.create()
+#     return Response('add the product')
 
 
 @api_view(['GET'])
@@ -606,6 +612,90 @@ def get_categories(request):
     print(data)
     
     return Response(data,status=status.HTTP_200_OK)
+
+
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def product_details(request,id):
+    product_details = ProductVariant.objects.get(pk = id)
+    data = {
+        'product_name':product_details.product.name,
+        'product_price':product_details.price,
+        'product_stock_quantity':product_details.stock_quantity,
+        'product_images':[request.build_absolute_uri(image.image.url) for image in product_details.variant_images.all()]
+
+
+    }
+    return Response(data)
+
+
+# class AddProductView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         user = request.user  # Get the authenticated user
+
+#         if not isinstance(user, CustomUser):
+#             return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+
+#         data = request.data.copy()
+#         data['created_by'] = user.id  # Ensure 'created_by' is included
+
+#         # Fix category assignment
+#         category_id = data.pop('categories', None)
+#         if not category_id or not Category.objects.filter(id=category_id).exists():
+#             return Response({"error": "Invalid or missing category"}, status=status.HTTP_400_BAD_REQUEST)
+#         data['category'] = category_id
+#         serializer = ProductSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save(created_by=user)  # Pass 'created_by' explicitly
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddProductView(APIView):
+    def post(self, request, *args, **kwargs):
+      
+        # Assuming the user is authenticated; adjust based on your auth setup
+        user = request.user  # CustomUser instance
+        if not isinstance(user, CustomUser):
+            return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+      
+        # Prepare data from request
+        data = request.data.copy()
+        data['created_by'] = user.id  # Add the user who created the product
+
+        # Map frontend field names to backend field names
+       
+        data['name'] = data.pop('productName')
+        category_id = data.pop('categories', None)  # Assuming categories is an ID or list
+        
+      
+        if not category_id or not Category.objects.filter(id=category_id).exists():
+            return Response({"error": "Invalid or missing category"}, status=status.HTTP_400_BAD_REQUEST)
+        data['category'] = category_id
+
+        # Handle variants
+        variants = data.get('variants', [])
+       
+        for variant in variants:
+            variant['name'] = variant.pop('colorName')  # Map colorName to name
+            variant['stock_quantity'] = variant.pop('stock')  # Map stock to stock_quantity
+            # Images are already in 'images' field as base64 strings
+    
+
+        serializer = ProductSerializer(data=data,context={'request': request})
+        
+        if serializer.is_valid():
+            
+            serializer.save(variants = variants)
+ 
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
 
         
     
