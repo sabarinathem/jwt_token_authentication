@@ -6,6 +6,7 @@ const ProductPage = () => {
   const {id} = useParams();
   const [productDetails,setProductDetails] = useState({});
   const [productImages,setProductImages] = useState([]);
+  const [variants,setVariants] = useState([]);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -26,6 +27,7 @@ const ProductPage = () => {
           const res = await api.get(`product_details/${id}`);
           setProductDetails(res.data);
           setProductImages(res.data.product_images);
+          setVariants(res.data.variants)
 
         }
         catch(error){
@@ -125,6 +127,7 @@ const ProductPage = () => {
   const handleApplyCoupon = () => {
     if (couponCode.trim() !== "") {
       setCouponApplied(true);
+      console.log(productImages)
       // In a real app, you would validate the coupon code with an API call
     }
   };
@@ -237,16 +240,31 @@ const ProductPage = () => {
           <div>
             <p className="text-sm font-medium mb-2">Color</p>
             <div className="flex space-x-2">
-              {colorOptions.map((option) => (
+              {variants.map((obj,index) => (
                 <button 
-                  key={option.id} 
+                  key={index} 
                   className="w-12 h-12 border hover:border-black focus:outline-none"
+                  style={{backgroundColor:obj.color}}
+                  onClick={()=>{
+                    // setProductDetails(obj);
+                    // setProductImages(obj.variant_images)
+                    // console.log(obj.variant_images)
+
+                    const images = obj.variant_images.map((item)=>{
+                      return item.image
+                    })
+                    setProductImages(images)
+                    console.log(obj)
+                    
+                  }}
+
+                  
                 >
-                  <img 
+                  {/* <img 
                     src={option.img || "/placeholder.svg"} 
                     alt={option.color} 
                     className="w-full h-full object-cover"
-                  />
+                  /> */}
                 </button>
               ))}
             </div>

@@ -620,7 +620,23 @@ def get_categories(request):
 @permission_classes([AllowAny])
 def product_details(request,id):
     product_details = ProductVariant.objects.get(pk = id)
+    variants = ProductVariantSerializer(product_details.product.variants.all(),many=True)
+    updated_variants = [
+    {
+        **variant,
+        "variant_images": [
+            {**image, "image": f'{request.build_absolute_uri('/')}media/{image["image"]}'}
+            for image in variant["variant_images"]
+        ],
+    }
+    for variant in variants.data
+]
+    
+  
+
     data = {
+        'product_id':product_details.product.id,
+        'variants':updated_variants,
         'product_name':product_details.product.name,
         'product_price':product_details.price,
         'product_stock_quantity':product_details.stock_quantity,
