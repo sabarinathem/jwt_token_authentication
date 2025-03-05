@@ -18,8 +18,6 @@ export default function ProductsGrid() {
             const getData = async()=>{
                 const res = await api.get('/products/')
                 const {product_list,category_list} = res.data
-                console.log(product_list)
-                console.log(category_list)
                 dispatch({type:"set_products",payload:product_list})
                 dispatch({type:"set_categories",payload:category_list})
                 setLoading(true)

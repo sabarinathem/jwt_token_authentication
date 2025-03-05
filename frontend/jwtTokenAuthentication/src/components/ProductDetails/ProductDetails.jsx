@@ -1,6 +1,6 @@
 import api from "@/api";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const ProductPage = () => {
   const {id} = useParams();
@@ -37,12 +37,6 @@ const ProductPage = () => {
 
   },[])
 
-  // const productImages = [
-  //   "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-03-04%20at%204.35.23%E2%80%AFAM-gTEqpLl6rLtXGn9kVm9Ub5XsNhZ5kj.png", // Replace with actual image URLs
-  //   "https://v0.dev/placeholder.svg?height=600&width=400",
-  //   "https://v0.dev/placeholder.svg?height=600&width=400",
-  //   "https://v0.dev/placeholder.svg?height=600&width=400"
-  // ];
 
   const colorOptions = [
     { id: 1, color: "navy", img: "https://v0.dev/placeholder.svg?height=50&width=50&text=Navy" },
@@ -158,30 +152,30 @@ const ProductPage = () => {
       <nav className="flex text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
           <li className="inline-flex items-center">
-            <a href="#" className="hover:text-gray-700">Home</a>
+            <Link to="/" className="hover:text-gray-700">Home</Link>
           </li>
           <li>
+            <div className="flex items-center">
+              <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+              </svg>
+              <Link to="/products" className="ml-1 hover:text-gray-700">Products</Link>
+            </div>
+          </li>
+          {/* <li>
             <div className="flex items-center">
               <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
               </svg>
               <a href="#" className="ml-1 hover:text-gray-700">Men</a>
             </div>
-          </li>
-          <li>
-            <div className="flex items-center">
-              <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
-              </svg>
-              <a href="#" className="ml-1 hover:text-gray-700">Shirts</a>
-            </div>
-          </li>
+          </li> */}
           <li aria-current="page">
             <div className="flex items-center">
               <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
               </svg>
-              <span className="ml-1 text-gray-800 font-medium">Loose Fit Flannel Shirt</span>
+              <span className="ml-1 text-gray-800 font-medium w-48 truncate">{productDetails.product_name}</span>
             </div>
           </li>
         </ol>
