@@ -510,7 +510,7 @@ def filtered_products(request):
                 "id": product.id,
                 "name": product.product.name,
                 "price": product.price,
-                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product).image.url) if product.product.product_image.exists() else None,
+                "image": request.build_absolute_uri(product.product.product_image.get(product=product.product,variant = product,is_primary = True).image.url) if product.product.product_image.exists() else None,
         } 
         for product in products
         ]       

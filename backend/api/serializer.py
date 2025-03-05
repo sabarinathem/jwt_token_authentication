@@ -79,22 +79,28 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         fields = ['size', 'color', 'name', 'price', 'stock_quantity', 'variant_images']
 
     def create(self, validated_data):
-        images_data = validated_data.pop('images', [])  # ✅ Extract images list using "images" key
+        images_data = validated_data.pop('images', [])  # Extract images list using "images" key
 
         # Create the ProductVariant instance
         variant = ProductVariant.objects.create(**validated_data)
 
-        # ✅ Process images and rename "images" to "image" before saving
+        # Process images and rename "images" to "image" before saving
+        first = True
         for base64_string in images_data:
             if isinstance(base64_string, str) and base64_string.startswith("data:image"):
-                format, imgstr = base64_string.split(';base64,')  # ✅ Extract format
-                ext = format.split('/')[-1]  # ✅ Extract file extension (e.g., jpeg, png)
-                filename = f"{uuid.uuid4()}.{ext}"  # ✅ Generate a unique filename
-                image_data = base64.b64decode(imgstr)  # ✅ Decode Base64 to binary
-                image_file = ContentFile(image_data, name=filename)  # ✅ Convert to Django file
+                format, imgstr = base64_string.split(';base64,') 
+                ext = format.split('/')[-1]  
+                filename = f"{uuid.uuid4()}.{ext}" 
+                image_data = base64.b64decode(imgstr)  
+                image_file = ContentFile(image_data, name=filename)  
 
-                # ✅ Create and save the image instance
-                ProductImage.objects.create(variant=variant, image=image_file,product=variant.product)
+                # Create and save the image instance
+                if first:
+                    ProductImage.objects.create(variant=variant, image=image_file,product=variant.product,is_primary = True)
+                    first = False
+                else:
+                    ProductImage.objects.create(variant=variant, image=image_file,product=variant.product)
+
 
         return variant
 
